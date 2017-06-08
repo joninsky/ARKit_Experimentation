@@ -12,10 +12,9 @@ import ARKit
 class ViewController: UIViewController {
 
     //MARK: Properties
-    
     @IBOutlet weak var arScene: ARSCNView!
     
-    
+    //MARK: ARKit variables
     var realityConfiguration: ARWorldTrackingSessionConfiguration?
     
     //MARK: Lifecycle
@@ -39,37 +38,31 @@ class ViewController: UIViewController {
 
 extension ViewController {
     func prepare() {
-        
         //Check to see if active reality is supported
         guard ARSessionConfiguration.isSupported else {
             AppDelegate.alert(title: "Not Supported", message: "Active Reality is not supported on this device")
             return
         }
-        
         //Set up the ARSessionConfiguration
         self.realityConfiguration = ARWorldTrackingSessionConfiguration()
-        
-//        self.realityConfiguration?.planeDetection = .horizontal
-//        self.realityConfiguration?.isLightEstimationEnabled = false
-//        self.realityConfiguration?.worldAlignment = .camera
+        self.realityConfiguration?.planeDetection = ARWorldTrackingSessionConfiguration.PlaneDetection.horizontal
+        //Note: Horizontal plane detection is the default.
         //Set up the ARSCNView
-        
         guard let config = self.realityConfiguration else {
             return
         }
-        
+        //Run the ARSCNView and set its delegate 
         self.arScene.session.run(config)
-        
         self.arScene.delegate = self
-        
     }
 }
 
 extension ViewController: ARSCNViewDelegate {
     
-    func renderer(_ renderer: SCNSceneRenderer, nodeFor anchor: ARAnchor) -> SCNNode? {
-        return nil
-    }
+//Conflicts with the didAdd node method below. One or the other I guess
+//    func renderer(_ renderer: SCNSceneRenderer, nodeFor anchor: ARAnchor) -> SCNNode? {
+//        return nil
+//    }
     
     func renderer(_ renderer: SCNSceneRenderer, didAdd node: SCNNode, for anchor: ARAnchor) {
         guard let planAnchor = anchor as? ARPlaneAnchor else {
@@ -87,19 +80,15 @@ extension ViewController: ARSCNViewDelegate {
     }
     
     func renderer(_ renderer: SCNSceneRenderer, willUpdate node: SCNNode, for anchor: ARAnchor) {
-        
-        
+        print("Will updated Node on Anchor: \(anchor.identifier)")
     }
     
     func renderer(_ renderer: SCNSceneRenderer, didUpdate node: SCNNode, for anchor: ARAnchor) {
-        
-        
+        print("Did updated Node on Anchor: \(anchor.identifier)")
     }
     
     func renderer(_ renderer: SCNSceneRenderer, didRemove node: SCNNode, for anchor: ARAnchor) {
-        
-        
+        print("Removed Node on Anchor: \(anchor.identifier)")
     }
-    
 }
 
